@@ -1,5 +1,6 @@
 package com.effectivemobile.codegenerateservice.service;
 
+import com.effectivemobile.codegenerateservice.entity.OneTimeTokenDto;
 import com.effectivemobile.codegenerateservice.exeptions.TokenNotExistException;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,19 +17,21 @@ public class KafkaListnerServiceImpl implements KafkaListnerService {
         this.oneTimeTokenService = oneTimeTokenService;
     }
 
-    @KafkaListener(topics = "${kafka.topic-name.stringEmail}")
+    @KafkaListener(topics = "${kafka.topic-name.objectEmail}")
     @Override
-    public void listenEmail(String stringEmail) {
-        if (stringEmail != null) {
-            oneTimeTokenService.createToken(stringEmail);
+    public void listenEmail(OneTimeTokenDto oneTimeTokenDto) {
+        if (oneTimeTokenDto != null && oneTimeTokenDto.getEmail() != null) {
+            String userEmail = oneTimeTokenDto.getEmail();
+            oneTimeTokenService.createToken(userEmail);
         }
     }
 
-    @KafkaListener(topics = "${kafka.topic-name.stringToken}")
+    @KafkaListener(topics = "${kafka.topic-name.tokenObject}")
     @Override
-    public void listenToken(String stringToken) throws TokenNotExistException {
-        if (stringToken != null) {
-            oneTimeTokenService.verifyToken(stringToken);
+    public void listenToken(OneTimeTokenDto oneTimeTokenDto) throws TokenNotExistException {
+        if (oneTimeTokenDto != null && oneTimeTokenDto.getUserToken() != null) {
+            String userToken = oneTimeTokenDto.getUserToken();
+            oneTimeTokenService.verifyToken(userToken);
         }
     }
 }

@@ -11,19 +11,19 @@ import static com.effectivemobile.codegenerateservice.exeptions.ExceptionsDescri
 @Service
 public class KafkaSenderServiceImpl implements KafkaSenderService {
 
-    @Value("${kafka.stringTopicName}")
-    private final String stringTopicName;
+    @Value("${kafka.topic-name.tokenObject}")
+    private final String tokenObjectTopicName;
 
-    @Value("${kafka.topic-name.booleanVerifyToken}")
-    private final String booleanTopicName;
+    @Value("${kafka.topic-name.objectTokenWasUsed}")
+    private final String objectTokenWasUsedTopicName;
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Autowired
-    public KafkaSenderServiceImpl(String stringTopicName, String booleanTopicName,
+    public KafkaSenderServiceImpl(String tokenObjectTopicName, String objectTokenWasUsedTopicName,
                                   KafkaTemplate<String, Object> kafkaTemplate) {
-        this.stringTopicName = stringTopicName;
-        this.booleanTopicName = booleanTopicName;
+        this.tokenObjectTopicName = tokenObjectTopicName;
+        this.objectTokenWasUsedTopicName = objectTokenWasUsedTopicName;
         this.kafkaTemplate = kafkaTemplate;
     }
 
@@ -34,10 +34,10 @@ public class KafkaSenderServiceImpl implements KafkaSenderService {
     }
 
     private String qualifyTopic(String topic, Object message) throws KafkaSenderRuntimeException {
-        if (topic.equals(stringTopicName) && message instanceof String) {
-            topic = stringTopicName;
-        } else if (topic.equals( booleanTopicName) && message instanceof Boolean) {
-            topic =  booleanTopicName;
+        if (topic.equals(tokenObjectTopicName) && message instanceof String) {
+            topic = tokenObjectTopicName;
+        } else if (topic.equals(objectTokenWasUsedTopicName) && message instanceof Boolean) {
+            topic = objectTokenWasUsedTopicName;
         } else {
             throw new KafkaSenderRuntimeException(TOPIC_OR_OBJECT_IN_KAFKA_IS_INCORRECT.getDescription());
         }
