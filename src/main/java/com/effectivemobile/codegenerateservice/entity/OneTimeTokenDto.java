@@ -2,6 +2,8 @@ package com.effectivemobile.codegenerateservice.entity;
 
 import com.effectivemobile.codegenerateservice.others.kafkaconsumervalidation.ObjectEmailValidationGroup;
 import com.effectivemobile.codegenerateservice.others.kafkaconsumervalidation.TokenObjectValidationGroup;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import lombok.*;
@@ -15,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Validated
-public class OneTimeToken {
+public class OneTimeTokenDto {
 
     //1.Приходит объект в одним заполненным полем Email, остальные null - в auth
     //2.Отправляется объект с заполненными полями + сген.токен Token

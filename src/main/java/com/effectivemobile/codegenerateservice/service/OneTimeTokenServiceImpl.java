@@ -1,7 +1,7 @@
 package com.effectivemobile.codegenerateservice.service;
 
 import com.effectivemobile.codegenerateservice.entity.CustomUser;
-import com.effectivemobile.codegenerateservice.entity.OneTimeToken;
+import com.effectivemobile.codegenerateservice.entity.OneTimeTokenDto;
 import com.effectivemobile.codegenerateservice.exeptions.ExceptionsDescription;
 import com.effectivemobile.codegenerateservice.exeptions.TokenNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,44 +34,44 @@ public class OneTimeTokenServiceImpl implements OneTimeTokenService {
     }
 
     @Override
-    public OneTimeToken createToken(CustomUser customUser) {
+    public OneTimeTokenDto createToken(CustomUser customUser) {
         String token = UUID.randomUUID().toString();
         String email = customUser.getEmail();
         LocalDateTime createDate = LocalDateTime.now();
         LocalDateTime expireDate = createDate.plusMinutes(EXPIRE_TIME);
         Boolean isUsed = false;
-        OneTimeToken localOneTimeToken = OneTimeToken.builder()
+        OneTimeTokenDto localOneTimeTokenDto = OneTimeTokenDto.builder()
                 .userToken(token)
                 .email(email)
                 .createdTime(createDate)
                 .expiredTime(expireDate)
                 .used(isUsed)
                 .build();
-        redisTemplate.opsForValue().set(token, localOneTimeToken, EXPIRE_TIME, TimeUnit.MINUTES);
-        return localOneTimeToken;
+        redisTemplate.opsForValue().set(token, localOneTimeTokenDto, EXPIRE_TIME, TimeUnit.MINUTES);
+        return localOneTimeTokenDto;
     }
 
     @Override
-    public void verifyToken(OneTimeToken oneTimeToken) throws TokenNotExistException {
-        OneTimeToken oneTimeTokenFromRedis;
-        String receivedToken = oneTimeToken.getUserToken();
+    public void verifyToken(OneTimeTokenDto oneTimeTokenDto) throws TokenNotExistException {
+        OneTimeTokenDto oneTimeTokenDtoFromRedis;
+        String receivedToken = oneTimeTokenDto.getUserToken();
         Object objectFromRedis = redisTemplate.opsForValue().get(receivedToken);
         if (objectFromRedis != null) {
-            oneTimeTokenFromRedis = (OneTimeToken) objectFromRedis;
+            oneTimeTokenDtoFromRedis = (OneTimeTokenDto) objectFromRedis;
         } else {
             throw new TokenNotExistException(ExceptionsDescription.TOKEN_NOT_FOUND.getDescription());
         }
-        if (oneTimeTokenFromRedis.getUserToken() != null &&
-                oneTimeTokenFromRedis.getUserToken().equals(receivedToken)) {
-            oneTimeTokenFromRedis.setUsed(Boolean.TRUE);
+        if (oneTimeTokenDtoFromRedis.getUserToken() != null &&
+                oneTimeTokenDtoFromRedis.getUserToken().equals(receivedToken)) {
+            oneTimeTokenDtoFromRedis.setUsed(Boolean.TRUE);
             redisTemplate.delete(receivedToken);
-        } else if(oneTimeTokenFromRedis.getUserToken() != null) {
+        } else if(oneTimeTokenDtoFromRedis.getUserToken() != null) {
             Long expireTimeInRedis = redisTemplate.getExpire(receivedToken, TimeUnit.MILLISECONDS);
             if (expireTimeInRedis != null && expireTimeInRedis > 0) {
-                oneTimeTokenFromRedis.setUsed(Boolean.FALSE);
-                redisTemplate.opsForValue().set(receivedToken, oneTimeTokenFromRedis, expireTimeInRedis, TimeUnit.MILLISECONDS);
+                oneTimeTokenDtoFromRedis.setUsed(Boolean.FALSE);
+                redisTemplate.opsForValue().set(receivedToken, oneTimeTokenDtoFromRedis, expireTimeInRedis, TimeUnit.MILLISECONDS);
             }
         }
-        kafkaSenderService.sendToTopic(listenTokenIsValidTopicName, oneTimeTokenFromRedis);
+        kafkaSenderService.sendToTopic(listenTokenIsValidTopicName, oneTimeTokenDtoFromRedis);
     }
 }

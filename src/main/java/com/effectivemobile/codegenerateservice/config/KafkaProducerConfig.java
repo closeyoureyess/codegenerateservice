@@ -1,5 +1,7 @@
 package com.effectivemobile.codegenerateservice.config;
 
+import com.effectivemobile.codegenerateservice.entity.CustomUser;
+import com.effectivemobile.codegenerateservice.entity.OneTimeTokenDto;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.support.mapping.DefaultJackson2JavaTypeMapper;
+import org.springframework.kafka.support.mapping.Jackson2JavaTypeMapper;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import java.util.HashMap;
@@ -35,7 +39,27 @@ public class KafkaProducerConfig {
 
     @Bean
     public ProducerFactory<String, Object> producerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfigs());
+        JsonSerializer<Object> serializer = new JsonSerializer<>();
+        serializer.setTypeMapper(new DefaultJackson2JavaTypeMapper() {
+            {
+                setTypePrecedence(Jackson2JavaTypeMapper.TypePrecedence.TYPE_ID);
+                addTrustedPackages(
+                        "com.effectivemobile.authservice.entity",
+                        "com.effectivemobile.codegenerateservice.entity"
+                );
+                setIdClassMapping(Map.of(
+                        "customUser", CustomUser.class,
+                        "oneTimeToken", OneTimeTokenDto.class
+                ));
+            }
+        });
+
+        return new DefaultKafkaProducerFactory<>(
+                producerConfigs(),
+                new StringSerializer(),
+                serializer
+        );
+        /*return new DefaultKafkaProducerFactory<>(producerConfigs());*/
     }
 
     @Bean

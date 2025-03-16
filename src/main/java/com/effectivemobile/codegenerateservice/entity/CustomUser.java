@@ -1,6 +1,8 @@
 package com.effectivemobile.codegenerateservice.entity;
 
 import com.effectivemobile.codegenerateservice.others.kafkaconsumervalidation.ObjectEmailValidationGroup;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;

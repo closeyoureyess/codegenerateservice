@@ -1,6 +1,6 @@
 package com.effectivemobile.codegenerateservice.service;
 
-import com.effectivemobile.codegenerateservice.entity.OneTimeToken;
+import com.effectivemobile.codegenerateservice.entity.OneTimeTokenDto;
 import com.effectivemobile.codegenerateservice.exeptions.KafkaSenderRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +29,7 @@ public class KafkaSenderServiceImpl implements KafkaSenderService {
     }
 
     private String qualifyTopic(String topic, Object message) throws KafkaSenderRuntimeException {
-        if (message instanceof OneTimeToken) {
+        if (message instanceof OneTimeTokenDto) {
             if (topic.equals(objectTokenWasUsedTopicName)) {
                 topic = objectTokenWasUsedTopicName;
             } else {
