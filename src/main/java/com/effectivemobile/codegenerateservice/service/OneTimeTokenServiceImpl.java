@@ -4,7 +4,9 @@ import com.effectivemobile.codegenerateservice.entity.CustomUser;
 import com.effectivemobile.codegenerateservice.entity.OneTimeTokenDto;
 import com.effectivemobile.codegenerateservice.exeptions.ExceptionsDescription;
 import com.effectivemobile.codegenerateservice.exeptions.TokenNotExistException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -23,14 +25,18 @@ public class OneTimeTokenServiceImpl implements OneTimeTokenService {
     @Value("${kafka.producer.topic-name.token-is-valid}")
     private String listenTokenIsValidTopicName;
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final ObjectMapper objectMapper;
+
+    private final RedisTemplate<Object, Object> redisTemplate;
 
     private final KafkaSenderService kafkaSenderService;
 
     @Autowired
-    public OneTimeTokenServiceImpl(RedisTemplate<String, Object> redisTemplate, KafkaSenderService kafkaSenderService) {
+    public OneTimeTokenServiceImpl(RedisTemplate<Object, Object> redisTemplate, KafkaSenderService kafkaSenderService,
+                                   @Qualifier("redisConfig") ObjectMapper objectMapper) {
         this.redisTemplate = redisTemplate;
         this.kafkaSenderService = kafkaSenderService;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -57,7 +63,7 @@ public class OneTimeTokenServiceImpl implements OneTimeTokenService {
         String receivedToken = oneTimeTokenDto.getUserToken();
         Object objectFromRedis = redisTemplate.opsForValue().get(receivedToken);
         if (objectFromRedis != null) {
-            oneTimeTokenDtoFromRedis = (OneTimeTokenDto) objectFromRedis;
+            oneTimeTokenDtoFromRedis = objectMapper.convertValue(objectFromRedis, OneTimeTokenDto.class);
         } else {
             throw new TokenNotExistException(ExceptionsDescription.TOKEN_NOT_FOUND.getDescription());
         }

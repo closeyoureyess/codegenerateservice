@@ -34,32 +34,14 @@ public class KafkaProducerConfig {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootStrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        props.put(JsonSerializer.TYPE_MAPPINGS, "customUser:com.effectivemobile.codegenerateservice.entity.CustomUser,oneTimeToken:com.effectivemobile.codegenerateservice.entity.OneTimeTokenDto");
+
         return props;
     }
 
     @Bean
     public ProducerFactory<String, Object> producerFactory() {
-        JsonSerializer<Object> serializer = new JsonSerializer<>();
-        serializer.setTypeMapper(new DefaultJackson2JavaTypeMapper() {
-            {
-                setTypePrecedence(Jackson2JavaTypeMapper.TypePrecedence.TYPE_ID);
-                addTrustedPackages(
-                        "com.effectivemobile.authservice.entity",
-                        "com.effectivemobile.codegenerateservice.entity"
-                );
-                setIdClassMapping(Map.of(
-                        "customUser", CustomUser.class,
-                        "oneTimeToken", OneTimeTokenDto.class
-                ));
-            }
-        });
-
-        return new DefaultKafkaProducerFactory<>(
-                producerConfigs(),
-                new StringSerializer(),
-                serializer
-        );
-        /*return new DefaultKafkaProducerFactory<>(producerConfigs());*/
+        return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean

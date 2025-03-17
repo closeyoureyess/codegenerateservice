@@ -6,7 +6,13 @@ import com.effectivemobile.codegenerateservice.exeptions.TokenNotExistException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Headers;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -23,7 +29,7 @@ public class KafkaListnerServiceImpl implements KafkaListnerService {
     @Override
     public void listenEmail(CustomUser customUser) {
         log.info("New user registered: {}", customUser.getEmail());
-        /*oneTimeTokenService.createToken(customUser);*/
+        oneTimeTokenService.createToken(customUser);
     }
 
     @KafkaListener(topics = "${kafka.consumer.topic-name.object-token}", groupId = "codegen-service-group-two")
@@ -31,4 +37,16 @@ public class KafkaListnerServiceImpl implements KafkaListnerService {
     public void listenToken(OneTimeTokenDto oneTimeTokenDto) throws TokenNotExistException {
         oneTimeTokenService.verifyToken(oneTimeTokenDto);
     }
+
+    /*@KafkaListener(topics = "${kafka.consumer.topic-name.object-token}", groupId = "codegen-service-group-two")
+    @Override
+    public void listenToken(*//*@Payload Object payload, @Header(KafkaHeaders.RECEIVED_KEY) String key,
+                            @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+                            @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
+                            @Header(KafkaHeaders.OFFSET) long offset,
+                            @Headers Map<String, Object> headers*//*) {
+        log.info("Ключ: {}", key);
+        log.info("Заголовки Kafka: {}", headers);
+        log.info("Получено сообщение: {}", payload);
+    }*/
 }
