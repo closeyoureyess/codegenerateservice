@@ -1,6 +1,7 @@
 package com.effectivemobile.codegenerateservice.service;
 
 import com.effectivemobile.codegenerateservice.exeptions.KafkaSenderRuntimeException;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -17,6 +18,7 @@ import static com.effectivemobile.codegenerateservice.exeptions.ExceptionsDescri
 public class KafkaSenderServiceImpl implements KafkaSenderService {
 
     @Value("${kafka.producer.topic-name.token-is-valid}")
+    @Setter
     private String objectTokenWasUsedTopicName;
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
