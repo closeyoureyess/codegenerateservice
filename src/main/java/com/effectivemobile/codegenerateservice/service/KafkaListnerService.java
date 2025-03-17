@@ -4,8 +4,6 @@ import com.effectivemobile.codegenerateservice.entity.CustomUser;
 import com.effectivemobile.codegenerateservice.entity.OneTimeTokenDto;
 import com.effectivemobile.codegenerateservice.exeptions.TokenNotExistException;
 
-import java.util.Map;
-
 public interface KafkaListnerService {
 
     void listenEmail(CustomUser customUser);

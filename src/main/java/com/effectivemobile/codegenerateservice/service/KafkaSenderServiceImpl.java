@@ -1,7 +1,5 @@
 package com.effectivemobile.codegenerateservice.service;
 
-import com.effectivemobile.codegenerateservice.entity.CustomUser;
-import com.effectivemobile.codegenerateservice.entity.OneTimeTokenDto;
 import com.effectivemobile.codegenerateservice.exeptions.KafkaSenderRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
