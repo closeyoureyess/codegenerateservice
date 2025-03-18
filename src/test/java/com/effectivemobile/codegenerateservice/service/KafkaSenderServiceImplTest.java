@@ -1,5 +1,6 @@
 package com.effectivemobile.codegenerateservice.service;
 
+import com.effectivemobile.codegenerateservice.AbstractContainerTest;
 import com.effectivemobile.codegenerateservice.entity.OneTimeTokenDto;
 import com.effectivemobile.codegenerateservice.exeptions.KafkaSenderRuntimeException;
 import org.junit.jupiter.api.Assertions;
@@ -17,7 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class KafkaSenderServiceImplTest {
+class KafkaSenderServiceImplTest extends AbstractContainerTest {
 
     @Mock
     private KafkaTemplate<String, Object> kafkaTemplate;

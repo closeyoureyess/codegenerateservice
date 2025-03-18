@@ -1,5 +1,6 @@
 package com.effectivemobile.codegenerateservice.config;
 
+import com.effectivemobile.codegenerateservice.AbstractContainerTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -12,10 +13,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
-class RedisTemplateConfigTest {
+class RedisTemplateConfigTest extends AbstractContainerTest {
 
     @Autowired
     private RedisTemplate<Object, Object> redisTemplate;

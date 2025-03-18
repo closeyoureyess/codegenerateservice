@@ -1,5 +1,6 @@
 package com.effectivemobile.codegenerateservice.service;
 
+import com.effectivemobile.codegenerateservice.AbstractContainerTest;
 import com.effectivemobile.codegenerateservice.entity.CustomUser;
 import com.effectivemobile.codegenerateservice.entity.OneTimeTokenDto;
 import com.effectivemobile.codegenerateservice.exeptions.TokenNotExistException;
@@ -22,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
 @ExtendWith(MockitoExtension.class)
-class OneTimeTokenServiceImplTest {
+class OneTimeTokenServiceImplTest extends AbstractContainerTest {
 
     @Mock
     private RedisTemplate<Object, Object> redisTemplate;

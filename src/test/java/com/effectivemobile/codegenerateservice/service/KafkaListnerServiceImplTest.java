@@ -1,5 +1,6 @@
 package com.effectivemobile.codegenerateservice.service;
 
+import com.effectivemobile.codegenerateservice.AbstractContainerTest;
 import com.effectivemobile.codegenerateservice.entity.CustomUser;
 import com.effectivemobile.codegenerateservice.entity.OneTimeTokenDto;
 import com.effectivemobile.codegenerateservice.exeptions.TokenNotExistException;
@@ -14,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class KafkaListnerServiceImplTest {
+class KafkaListnerServiceImplTest extends AbstractContainerTest {
 
     @Mock
     private OneTimeTokenService oneTimeTokenService;
