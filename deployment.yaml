@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: codegenerateservicekuber
-          image: steadydev/codegenerateservice-image:1.0.0
+          image: steadydev/codegenerateservicekuber-image:1.0.1
           ports:
             - containerPort: 8081
           resources:
@@ -28,9 +28,9 @@ spec:
             - name: APP_NAME
               value: "codegenerateservice"
             - name: KAFKA_BROKER
-              value: "kafka-controller-headless.default.svc.cluster.local:9092"
+              value: "my-kafka:9092"
             - name: REDIS_HOST
-              value: "redis-master.default.svc.cluster.local"
+              value: "my-redis-master"
             - name: REDIS_PORT
               value: "6379"
             - name: REDIS_DATABASE
