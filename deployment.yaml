@@ -1,0 +1,55 @@
+apiVersion: apps/v1 # какую версию API мастер-ноды использовать
+kind: Deployment #Корень, отвечает за развертывание приложения в кубернетисе
+metadata:
+  name: codegenerateservicekuber
+spec:
+  replicas: 1
+  selector: # т.е имя для поиска и создания реплики
+    matchLabels: # Сколько реплик создать для приложения с наименованием:
+      app: codegenerateservicekuber
+  template:
+    metadata:
+      labels:
+        app: codegenerateservicekuber # приложение внутри кубернетиса
+    spec:
+      containers:
+        - name: codegenerateservicekuber
+          image: steadydev/codegenerateservice-image:1.0.0
+          ports:
+            - containerPort: 8081
+          resources:
+            limits:
+              memory: "512Mi"
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+              ephemeral-storage: "1Gi"
+          env:
+            - name: APP_NAME
+              value: "codegenerateservice"
+            - name: KAFKA_BROKER
+              value: "kafka-controller-headless.default.svc.cluster.local:9092"
+            - name: REDIS_HOST
+              value: "redis-master.default.svc.cluster.local"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_DATABASE
+              value: "1"
+            - name: PRODUCER_TOPIC_NAME_TOKEN_IS_VALID
+              value: "validate-entered-token"
+            - name: CONSUMER_TOPIC_NAME_OBJECT_EMAIL_ADDRESS
+              value: "email-address-object"
+            - name: CONSUMER_TOPIC_NAME_OBJECT_TOKEN
+              value: "object-token"
+            - name: ACTUATOR_SERVER_PORT
+              value: "8081"
+            - name: ACTUATOR_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+              value: "health"
+            - name: ACTUATOR_ENDPOINTS_HEALTH_SHOW_DETAILS
+              value: "when_authorized"
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8081
+            initialDelaySeconds: 30
+            periodSeconds: 5

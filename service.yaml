@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: codegenerateservicekuber
+spec:
+  type: LoadBalancer
+  selector:
+    app: codegenerateservicekuber
+  ports:
+    - protocol: TCP
+      name: http-traffic
+      port: 8081
+      targetPort: 8081
